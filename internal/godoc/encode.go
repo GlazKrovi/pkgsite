@@ -33,6 +33,9 @@ var ErrInvalidEncodingType = fmt.Errorf("want initial bytes to be %q but they ar
 // rendering before it returns.
 func (p *Package) Encode(ctx context.Context) (_ []byte, err error) {
 	defer derrors.Wrap(&err, "godoc.Package.Encode()")
+	if p.lyuba != nil {
+		return EncodeLyuba(p.lyuba)
+	}
 	return p.fastEncode()
 }
 
@@ -46,6 +49,8 @@ func DecodePackage(data []byte) (_ *Package, err error) {
 	switch string(data[:encodingTypeLen]) {
 	case fastEncodingType:
 		return fastDecodePackage(data[encodingTypeLen:])
+	case lyubaEncodingType:
+		return decodeLyuba(data[encodingTypeLen:])
 	default:
 		return nil, ErrInvalidEncodingType
 	}

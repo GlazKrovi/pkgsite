@@ -61,6 +61,7 @@ import (
 	"time"
 
 	"golang.org/x/pkgsite/cmd/internal/pkgsite"
+	"golang.org/x/pkgsite/internal/fetch"
 	"golang.org/x/pkgsite/internal/browser"
 	"golang.org/x/pkgsite/internal/log"
 	"golang.org/x/pkgsite/internal/middleware/timeout"
@@ -79,6 +80,7 @@ var (
 )
 
 func main() {
+	fetch.LyubaOnly = true // pkg.lyuba.dev : seulement les modules Lyuba
 	var serverCfg pkgsite.ServerConfig
 
 	flag.BoolVar(&serverCfg.GOPATHMode, "gopath_mode", false, "assume that local modules' Paths are relative to GOPATH/src")

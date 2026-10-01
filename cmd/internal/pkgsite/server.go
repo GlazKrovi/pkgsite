@@ -219,6 +219,22 @@ func buildGetters(ctx context.Context, cfg getterConfig) ([]fetch.ModuleGetter, 
 
 	// Load local getters for each directory.
 	for dir, modules := range cfg.dirs {
+		// module Lyuba : go/packages n'y voit aucun package (pas de .go),
+		// le dossier est lu tel quel
+		lyuba := false
+		for _, m := range modules {
+			if hasLyubaFiles(m.Dir) {
+				mg, err := fetch.NewDirectoryModuleGetter(m.ModulePath, m.Dir)
+				if err != nil {
+					return nil, err
+				}
+				getters = append(getters, mg)
+				lyuba = true
+			}
+		}
+		if lyuba {
+			continue
+		}
 		var patterns []string
 		if cfg.all {
 			patterns = append(patterns, "all")
@@ -339,4 +355,22 @@ func runGo(dir string, args ...string) ([]byte, error) {
 		return nil, fmt.Errorf("running go with %q: %v: %s", args, err, out)
 	}
 	return out, nil
+}
+
+// hasLyubaFiles : le dossier d'un module contient-il des .lyu ?
+func hasLyubaFiles(dir string) bool {
+	found := false
+	filepath.WalkDir(dir, func(p string, d fs.DirEntry, err error) error {
+		if err != nil || found {
+			return filepath.SkipAll
+		}
+		if d.IsDir() && p != dir && (strings.HasPrefix(d.Name(), ".") || d.Name() == "testdata" || d.Name() == "node_modules") {
+			return filepath.SkipDir
+		}
+		if !d.IsDir() && strings.HasSuffix(p, ".lyu") {
+			found = true
+		}
+		return nil
+	})
+	return found
 }

@@ -1,6 +1,6 @@
 module golang.org/x/pkgsite
 
-go 1.26.0
+go 1.27.0
 
 require (
 	cloud.google.com/go/cloudtasks v1.18.0
@@ -12,6 +12,7 @@ require (
 	contrib.go.opencensus.io/exporter/prometheus v0.1.0
 	contrib.go.opencensus.io/exporter/stackdriver v0.13.4
 	contrib.go.opencensus.io/integrations/ocsql v0.1.4
+	github.com/GlazKrovi/lyuba v0.0.0
 	github.com/Masterminds/squirrel v1.5.2
 	github.com/alicebob/miniredis/v2 v2.17.0
 	github.com/evanw/esbuild v0.17.8
@@ -122,3 +123,5 @@ tool (
 	mvdan.cc/unparam
 	sourcegraph.com/sourcegraph/go-template-lint
 )
+
+replace github.com/GlazKrovi/lyuba => ../lyuba

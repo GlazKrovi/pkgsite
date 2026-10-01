@@ -60,6 +60,7 @@ var (
 )
 
 func main() {
+	fetch.LyubaOnly = true // pkg.lyuba.dev : seulement les modules Lyuba
 	flag.Parse()
 	ctx := context.Background()
 	cfg, err := serverconfig.Init(ctx)

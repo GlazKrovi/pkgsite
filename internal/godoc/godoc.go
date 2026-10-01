@@ -22,6 +22,7 @@ type Package struct {
 	Fset *token.FileSet
 	encPackage
 	renderCalled bool
+	lyuba        []LyubaFile // package Lyuba (lyuba.go) : ses sources, à la place de l'ast go
 }
 
 // encPackage holds the fields of Package that can be directly encoded.

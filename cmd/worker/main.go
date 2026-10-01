@@ -20,6 +20,7 @@ import (
 	"go.opencensus.io/plugin/ochttp"
 	octrace "go.opencensus.io/trace"
 	"golang.org/x/pkgsite/cmd/internal/cmdconfig"
+	"golang.org/x/pkgsite/internal/fetch"
 	"golang.org/x/pkgsite/internal/config"
 	"golang.org/x/pkgsite/internal/config/serverconfig"
 	"golang.org/x/pkgsite/internal/dcensus"
@@ -61,6 +62,7 @@ var (
 )
 
 func main() {
+	fetch.LyubaOnly = true // pkg.lyuba.dev : seulement les modules Lyuba
 	flag.Parse()
 
 	ctx := context.Background()

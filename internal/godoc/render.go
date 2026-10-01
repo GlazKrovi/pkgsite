@@ -50,6 +50,9 @@ func (p *Package) DocInfo(ctx context.Context, innerPath string, sourceInfo *sou
 	defer derrors.Wrap(&err, "godoc.Package.DocInfo(%q, %q, %q)", modInfo.ModulePath, modInfo.ResolvedVersion, innerPath)
 
 	p.renderCalled = true
+	if p.lyuba != nil {
+		return p.lyubaDocInfo()
+	}
 	d, err := p.DocPackage(innerPath, modInfo)
 	if err != nil {
 		return "", nil, nil, err
@@ -91,6 +94,9 @@ func cleanImports(imports []string, importPath string) []string {
 
 // DocPackage computes and returns a doc.Package.
 func (p *Package) DocPackage(innerPath string, modInfo *ModuleInfo) (_ *doc.Package, err error) {
+	if p.lyuba != nil {
+		return nil, fmt.Errorf("package Lyuba : pas de doc go (go/doc), seulement le rendu html")
+	}
 	defer derrors.Wrap(&err, "docPackage(%q, %q, %q)", innerPath, modInfo.ModulePath, modInfo.ResolvedVersion)
 	importPath := path.Join(modInfo.ModulePath, innerPath)
 	if modInfo.ModulePath == stdlib.ModulePath {
@@ -229,6 +235,9 @@ func (p *Package) Render(ctx context.Context, innerPath string,
 	sourceInfo *source.Info, modInfo *ModuleInfo, nameToVersion map[string]string,
 	bc internal.BuildContext) (_ *dochtml.Parts, err error) {
 	p.renderCalled = true
+	if p.lyuba != nil {
+		return p.renderLyuba(ctx, innerPath, sourceInfo)
+	}
 
 	d, err := p.DocPackage(innerPath, modInfo)
 	if err != nil {

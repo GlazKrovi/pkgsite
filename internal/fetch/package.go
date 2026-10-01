@@ -77,8 +77,8 @@ func extractPackage(ctx context.Context, modulePath, pkgPath string, contentDir 
 		if e.IsDir() {
 			continue
 		}
-		if !strings.HasSuffix(e.Name(), ".go") {
-			// We care about .go files only.
+		if !isSourceFile(e.Name()) {
+			// We care about .go and .lyu files only.
 			continue
 		}
 		goFiles = append(goFiles, path.Join(innerPath, e.Name()))
@@ -92,7 +92,12 @@ func extractPackage(ctx context.Context, modulePath, pkgPath string, contentDir 
 		status error
 		errMsg string
 	)
-	pkg, err := loadPackage(ctx, contentDir, goFiles, innerPath, sourceInfo, modInfo)
+	var pkg *goPackage
+	if lyu := lyubaFiles(goFiles); len(lyu) > 0 {
+		pkg, err = loadLyubaPackage(ctx, contentDir, lyu, innerPath, sourceInfo, modInfo)
+	} else {
+		pkg, err = loadPackage(ctx, contentDir, goFiles, innerPath, sourceInfo, modInfo)
+	}
 	if bpe := (*BadPackageError)(nil); errors.As(err, &bpe) {
 		log.Infof(ctx, "Error loading %s: %v", innerPath, err)
 		status = derrors.PackageInvalidContents
@@ -197,6 +202,10 @@ func extractPackageMetas(ctx context.Context, modulePath, resolvedVersion string
 		// prevent processing of other packages in the module.
 		incompleteDirs       = make(map[string]bool)
 		packageVersionStates = []*internal.PackageVersionState{}
+
+		// hasLyuba : le module contient au moins un .lyu (sinon, pas un
+		// module Lyuba, cf LyubaOnly)
+		hasLyuba bool
 	)
 
 	// Phase 1.
@@ -225,9 +234,12 @@ func extractPackageMetas(ctx context.Context, modulePath, resolvedVersion string
 			// File is in a directory we're not looking to process at this time, so skip it.
 			return nil
 		}
-		if !strings.HasSuffix(pathname, ".go") {
-			// We care about .go files only.
+		if !isSourceFile(pathname) {
+			// We care about .go and .lyu files only.
 			return nil
+		}
+		if strings.HasSuffix(pathname, ".lyu") {
+			hasLyuba = true
 		}
 		// It's possible to have a Go package in a directory that does not result in a valid import path.
 		// That package cannot be imported, but that may be fine if it's a main package, intended to built
@@ -277,6 +289,19 @@ func extractPackageMetas(ctx context.Context, modulePath, resolvedVersion string
 		return nil, nil, nil, err
 	}
 
+	if LyubaOnly && !hasLyuba {
+		return nil, nil, nil, fmt.Errorf("%w : %w", ErrModuleContainsNoPackages, ErrNotLyuba)
+	}
+	// un dossier Lyuba ne garde que ses .lyu (le .go généré est ignoré) ;
+	// un dossier sans .lyu d'un module Lyuba : du go à côté, ignoré
+	for dir, files := range dirs {
+		if lyu := lyubaFiles(files); len(lyu) > 0 {
+			dirs[dir] = lyu
+		} else if LyubaOnly {
+			delete(dirs, dir)
+		}
+	}
+
 	for pkgName := range dirs {
 		modInfo.ModulePackages[path.Join(modulePath, pkgName)] = true
 	}
@@ -304,7 +329,13 @@ func extractPackageMetas(ctx context.Context, modulePath, resolvedVersion string
 				status error
 				errMsg string
 			)
-			pkg, err := loadPackageMeta(ctx, contentDir, goFiles, innerPath, modInfo)
+			var pkg *packageMeta
+			var err error
+			if lyu := lyubaFiles(goFiles); len(lyu) > 0 {
+				pkg, err = loadLyubaPackageMeta(contentDir, lyu, innerPath, modInfo)
+			} else {
+				pkg, err = loadPackageMeta(ctx, contentDir, goFiles, innerPath, modInfo)
+			}
 			if bpe := (*BadPackageError)(nil); errors.As(err, &bpe) {
 				log.Infof(ctx, "Error loading %s: %v", innerPath, err)
 				mu.Lock()
