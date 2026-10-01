@@ -241,6 +241,7 @@ func (s *Server) Install(handle func(string, http.Handler), cacher Cacher, authV
 	// Lyuba installation: the page, and the scripts of the lyuba version this
 	// site depends on (curl .../install.sh | sh)
 	handle("GET /install", s.staticPageHandler("install", "Install Lyuba"))
+	handle("GET /why", s.staticPageHandler("why", "Why Lyuba?"))
 	handle("GET /install.sh", serveScript(lyubainstall.Sh, "text/x-shellscript; charset=utf-8"))
 	handle("GET /install.ps1", serveScript(lyubainstall.PowerShell, "text/plain; charset=utf-8"))
 	handle("GET /badge/", http.HandlerFunc(s.badgeHandler))

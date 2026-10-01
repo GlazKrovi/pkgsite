@@ -1,0 +1,73 @@
+<!--
+  Copyright 2026 Fernandes Samuel. All rights reserved.
+  Use of this source code is governed by a BSD-style
+  license that can be found in the LICENSE file.
+-->
+
+{{define "main"}}
+  <main class="go-Container" id="main-content">
+    <div class="go-Content">
+      <h1>Why Lyuba?</h1>
+      <p>The design choices behind Lyuba, each one a response to a frustration with existing languages.</p>
+      <ol style="list-style: decimal; padding-left: 1.5em;">
+        <li style="margin-bottom: 1em;">
+          <strong>Missing immutability</strong> leads to unpredictable side effects (C, Java, C#, Go).
+        </li>
+        <li style="margin-bottom: 1em;">
+          Where immutability is possible, it is either too slow (Java, C#) or not ergonomic: C#'s <code>with</code> expressions are clumsy, whereas TypeScript's spread syntax is excellent.
+        </li>
+        <li style="margin-bottom: 1em;">
+          <strong>The <code>new</code> keyword</strong> is very useful for spotting memory allocations and object creation at a glance, yet Kotlin and others removed it.
+        </li>
+        <li style="margin-bottom: 1em;">
+          <strong>The constructor is not a foundation of the language.</strong> In languages such as Go, Haskell or GDScript, you often have to write one yourself after the fact, by convention (something like <code>Thing.New</code> or <code>Thing.Create</code>), so developers using your type cannot know they are supposed to go through it. Constructors must therefore remain mandatory.
+        </li>
+        <li style="margin-bottom: 1em;">
+          <strong>Factories</strong> are recommended (Java) or even required (Dart). Here again, users have no way of knowing that they must go through another class to create instances. This leaves two options:
+          <ul style="list-style: disc; padding-left: 1.5em; margin-top: 0.5em;">
+            <li>make constructors more flexible, or</li>
+            <li>allow only one entity to create our records, but then there is no constructor left and no other way to create the data.</li>
+          </ul>
+        </li>
+        <li style="margin-bottom: 1em;">
+          <strong>Positional parameters make refactoring painful.</strong> They are hard to change correctly everywhere, and the compiler does not necessarily notice that the intent has changed: replace one string with another and the compiler is satisfied, even though the value may no longer be treated the same way. Named parameters are needed, passed as a JSON-like object, as in TypeScript or Dart.
+        </li>
+        <li style="margin-bottom: 1em;">
+          <strong>Mixing positional and named parameters is error-prone.</strong> The two are hard to tell apart when reading, the convention is rarely standardized, so everyone does it their own way and the result is inconsistent, and it keeps all the problems of positional-only parameters. There should be only named arguments, in the form of a JSON-like object, even if that object is itself anonymous.
+        </li>
+        <li style="margin-bottom: 1em;">
+          <strong>Top-level variables and methods</strong> are convenient but inconsistent with object-oriented programming. "Macros" (functions imported implicitly by default) are even worse. Such members should only be defined inside objects, even static ones. This is slightly more verbose, but much easier to read and to trace back to its origin (PHP, Rust and Python, for example, mix these heavily, with imports that are sometimes implicit and impossible to guess). Clarity at the price of slight verbosity is preferable, as Go advocates.
+        </li>
+        <li style="margin-bottom: 1em;">
+          <strong>Types should be inferred.</strong> TypeScript infers types remarkably well, and something similar is needed. Go also infers fairly well, but requires an explicit <code>:=</code> where a plain <code>=</code> would suffice. The syntax <code>let myVar: MyType</code>, <code>let myVar: MyType = checkedValue</code> and <code>let myVar = valueWhoseTypeIsInferred</code> is sufficient, and excellent.
+        </li>
+        <li style="margin-bottom: 1em;">
+          <strong>Enums of classes.</strong> It is a shame that only Rust offers enums whose variants carry data, because they are extremely practical. They would not be hard to offer elsewhere, particularly in languages that only have structs and therefore no methods to handle. They should be much more common.
+        </li>
+        <li style="margin-bottom: 1em;">
+          <strong>React hooks</strong> are convenient but too verbose. A plain <code>let</code> could be treated as "to be updated on every change" and generate a <code>useState</code>, while a <code>const</code> stays constant and generates a <code>useMemo</code>.
+        </li>
+        <li style="margin-bottom: 1em;">
+          <strong>One entity per file?</strong> GDScript handles only one class per code file by default, with a single <code>class_name</code> per file. But it is already inconsistent there, because enums and the like are declared in the same file as the class, and making them top-level becomes a nightmare (configuration, asking for the file to be loaded automatically, and so on). In modern usage, you also often need to declare an interface or type together with a class or component in the same file. So it should remain possible to define several things in one file, and it is up to the developer to organize well.
+        </li>
+        <li style="margin-bottom: 1em;">
+          <strong>Confusing scope declarations.</strong> Modern languages define <code>var</code>, <code>const</code>, <code>let</code>, <code>final</code> and <code>static</code>. This is either for micro-optimizations (which Go already handles well, without bothering with all these words) or to "improve understanding and readability", which in fact makes code very confusing, especially for newcomers who do not understand why <code>var</code> or <code>let</code> is used for something that varies, and why <code>const</code>, <code>final</code> or <code>static</code> is used for something constant. We should stick to <code>let</code> and <code>const</code>, much as TypeScript recommends today, for <em>everything</em>, and leave any optimization to the compiler.
+        </li>
+        <li style="margin-bottom: 1em;">
+          <strong>Build tooling is very complex, although it is very often not needed.</strong> Java requires Maven or Gradle even for a hello world. .NET is quite good, although its many "conventions" still require extra build steps that are very complex or written in ugly XML (adding an icon to the executable, for example). npm and Node are somewhat better designed, offering flexible, simple automation, often supplied by the authors of the frameworks you use. Doing as Go does, minimal and simple and producing nothing but an executable, is perfect, <em>or at most like Node and npm if a complex need is unavoidable</em>.
+          <ul style="list-style: disc; padding-left: 1.5em; margin-top: 0.5em;">
+            <li>Go needs no runtime code generation, macros or preprocessor, so there is no real need for a complex pipeline.</li>
+            <li>Classic automation tools are more than enough (Makefile, GitHub Actions, Husky...): no language-native layer is needed.</li>
+            <li>The only special case with an unusual build is compiling Go together with languages other than C/C++, where you will probably need a Makefile, a justfile or Bazel.</li>
+          </ul>
+        </li>
+        <li style="margin-bottom: 1em;">
+          <strong>Default values should be declared in one place.</strong> OOP languages let you set default values on properties and override them in the constructor, which is much more convenient than passing them as parameters at every construction. But in the end it is hard to know, without running the code, which values were actually kept at construction (and these values are sometimes modified a few lines after construction, so you have to wait for the end of the scope, with a debugger, to check which ones were kept). Languages built around functions and types, on the other hand, force you to declare every value at every construction. That is more explicit and readable, but you do not necessarily know which values to use, so you have to search the whole codebase for the right example; you have to comment each construction to explain why these values are used and not others; if you change one construction, you have to check all the others... What is needed is a single place to declare default values, the ability to pass override or required values at instantiation, and tooling that tells you, at instantiation time, what your data will actually look like in that specific case.
+        </li>
+        <li style="margin-bottom: 1em;">
+          <strong>Publishing packages</strong> is always hell and requires external services to keep your sanity. Go has a simpler system, but it lacks automatic version management and a small native interactive guide or tool. The better path is to keep Go's organization (a proxy site that indexes GitHub and GitLab repositories, a <code>go.mod</code> and a <code>go.sum</code>) and add the few helpers that the third-party tool GoReleaser (or an improved version of it that also manages versions) provides.
+        </li>
+      </ol>
+    </div>
+  </main>
+{{end}}

@@ -13,6 +13,7 @@ The package site of the [Lyuba](https://github.com/GlazKrovi/lyuba) language, fo
 | `cmd/pkgsite` reads a local Lyuba module as is (no go/packages) | `cmd/internal/pkgsite/server.go` |
 | Lyuba branding: logo, header, footer, home page; no gopher, nothing from Google (logo, Tag Manager, cookie banner) | `static/` |
 | install page and scripts: `/install`, `/install.sh`, `/install.ps1` (those of `lyuba/install`) | `internal/frontend/server.go`, `static/frontend/install` |
+| `/why`: the design rationale page, in `static/frontend/why` | `static/frontend/why`, `internal/frontend/server.go` |
 | the header's active tab follows the page | `internal/frontend/page/page.go`, `static/shared/header` |
 | deployment without Google Cloud | `lyuba-deploy/compose.yaml` |
 

@@ -18,13 +18,16 @@
         <div class="go-Header-rightContent">
           {{template "symbol_search_bar" .}}
           <ul class="go-Header-menu">
+            <li class="go-Header-menuItem{{if eq .NavPath "/why"}} go-Header-menuItem--active{{end}}">
+              <a href="/why" data-gtmc="nav link">Why Lyuba</a>
+            </li>
             <li class="go-Header-menuItem">
               <a href="https://github.com/GlazKrovi/lyuba/blob/main/docs/specs.md" data-gtmc="nav link">Specification</a>
             </li>
             <li class="go-Header-menuItem{{if eq .NavPath "/install"}} go-Header-menuItem--active{{end}}">
               <a href="/install" data-gtmc="nav link">Install</a>
             </li>
-            <li class="go-Header-menuItem{{if ne .NavPath "/install"}} go-Header-menuItem--active{{end}}">
+            <li class="go-Header-menuItem{{if and (ne .NavPath "/install") (ne .NavPath "/why")}} go-Header-menuItem--active{{end}}">
               <a href="/" data-gtmc="nav link">Packages</a>
             </li>
             <li class="go-Header-menuItem">
@@ -45,13 +48,16 @@
         </a>
       </div>
       <ul class="go-NavigationDrawer-list">
+        <li class="go-NavigationDrawer-listItem{{if eq .NavPath "/why"}} go-NavigationDrawer-listItem--active{{end}}">
+          <a href="/why">Why Lyuba</a>
+        </li>
         <li class="go-NavigationDrawer-listItem">
           <a href="https://github.com/GlazKrovi/lyuba/blob/main/docs/specs.md">Specification</a>
         </li>
         <li class="go-NavigationDrawer-listItem{{if eq .NavPath "/install"}} go-NavigationDrawer-listItem--active{{end}}">
           <a href="/install">Install</a>
         </li>
-        <li class="go-NavigationDrawer-listItem{{if ne .NavPath "/install"}} go-NavigationDrawer-listItem--active{{end}}">
+        <li class="go-NavigationDrawer-listItem{{if and (ne .NavPath "/install") (ne .NavPath "/why")}} go-NavigationDrawer-listItem--active{{end}}">
           <a href="/">Packages</a>
         </li>
         <li class="go-NavigationDrawer-listItem">
