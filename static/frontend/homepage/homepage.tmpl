@@ -31,18 +31,18 @@
           spellcheck="false"
           title="{{.SearchPrompt}}"
           autofocus="true">
-        <button type="submit" class="go-Button">Chercher</button>
+        <button type="submit" class="go-Button">Search</button>
       </form>
       <section class="go-Carousel Homepage-tips js-carousel" aria-label="Search Tips Carousel" data-slide-index="{{.TipIndex}}">
         <ul>
           {{range $i, $v := .SearchTips}}
             <li class="go-Carousel-slide" {{if not (eq $.TipIndex $i)}}aria-hidden{{end}} {{if (eq $.TipIndex $i)}}id="SearchTipContent"{{end}}>
               <p>
-                <strong>Astuce :</strong> {{.Text}}
-                <a href="/search?q={{$v.Example1}}">“{{$v.Example1}}”</a> ou
+                <strong>Tip:</strong> {{.Text}}
+                <a href="/search?q={{$v.Example1}}">“{{$v.Example1}}”</a> or
                 <a href="/search?q={{$v.Example2}}">“{{$v.Example2}}”</a>.
                 <a href="/search-help" target="_blank" rel="noopener" class="Homepage-helpLink">
-                  Aide à la recherche <span><img width="24" height="24" src="/static/shared/icon/launch_gm_grey_24dp.svg" alt=""></span>
+                  Search help <span><img width="24" height="24" src="/static/shared/icon/launch_gm_grey_24dp.svg" alt=""></span>
                 </a>
               </p>
             </li>
@@ -50,13 +50,13 @@
         </ul>
       </section>
       <section class="Homepage-install" aria-label="Installer Lyuba">
-        <p><strong>Installer Lyuba</strong> (<a href="/install">détails</a>) :</p>
+        <p><strong>Install Lyuba</strong> (<a href="/install">details</a>):</p>
         <pre>curl -fsSL https://pkg.lyuba.dev/install.sh | sh</pre>
         <pre>irm https://pkg.lyuba.dev/install.ps1 | iex</pre>
       </section>
       {{if .LocalModules}}
         <section class="Homepage-modules" aria-label="Local Modules">
-          <div class="Homepage-modules-header">Ou parcourir les modules locaux :</div>
+          <div class="Homepage-modules-header">Or browse local modules:</div>
           <ul>
             {{range .LocalModules}}<li><a href="/{{.ModulePath}}">{{.ModulePath}}</a> &ndash; {{.Dir}}</li>{{end}}
           </ul>
@@ -69,12 +69,12 @@
 {{define "pre-footer"}}
   <div class="Questions">
     <div class="Questions-content">
-      <div class="Questions-header" role="heading" aria-level="2">Questions fréquentes :</div>
+      <div class="Questions-header" role="heading" aria-level="2">Frequently asked questions:</div>
       <ul>
-        <li><a href="/install">Comment installer Lyuba ?</a></li>
-        <li><a href="https://github.com/GlazKrovi/lyuba/blob/main/docs/specs.md#lyuba-publish">Comment publier un package ? (lyuba publish)</a></li>
-        <li><a href="https://github.com/GlazKrovi/lyuba/blob/main/docs/specs.md">Où lire la spécification du langage ?</a></li>
-        <li><a href="/api">Comment utiliser l'API de pkg.lyuba.dev ?</a></li>
+        <li><a href="/install">How do I install Lyuba?</a></li>
+        <li><a href="https://github.com/GlazKrovi/lyuba/blob/main/docs/specs.md#lyuba-publish">How do I publish a package? (lyuba publish)</a></li>
+        <li><a href="https://github.com/GlazKrovi/lyuba/blob/main/docs/specs.md">Where is the language specification?</a></li>
+        <li><a href="/api">How can I use the pkg.lyuba.dev API?</a></li>
       </ul>
     </div>
   </div>

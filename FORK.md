@@ -1,43 +1,44 @@
-# pkg.lyuba.dev : fork de pkgsite
+# pkg.lyuba.dev: a fork of pkgsite
 
-Le site de packages du langage [Lyuba](https://github.com/GlazKrovi/lyuba), forké de [pkgsite](https://go.googlesource.com/pkgsite) (pkg.go.dev, licence BSD-3-Clause, voir `LICENSE` et `PATENTS`, conservés). Il lit le même index et le même proxy que pkg.go.dev, et ne garde que les modules qui contiennent des `.lyu`.
+The package site of the [Lyuba](https://github.com/GlazKrovi/lyuba) language, forked from [pkgsite](https://go.googlesource.com/pkgsite) (pkg.go.dev, BSD-3-Clause license, see `LICENSE` and `PATENTS`, both kept). It reads the same index and the same proxy as pkg.go.dev, and only keeps modules that contain `.lyu` files.
 
-## Ce qui change par rapport à pkgsite
+## What differs from pkgsite
 
-| | fichiers |
+| | files |
 | --- | --- |
-| un dossier avec des `.lyu` est un package Lyuba ; le `.go` généré à côté est ignoré | `internal/fetch/lyuba.go`, `internal/fetch/package.go` |
-| doc Lyuba : encodage `LYU1` (les sources), rendue par le parser du compilateur et `lyuba/doc` | `internal/godoc/lyuba.go`, `encode.go`, `render.go` |
-| module sans `.lyu` : exclu (403), sans erreur dans les journaux | `internal/fetch/lyuba.go`, `internal/queue/pgqueue/queue.go` |
-| `fetch.LyubaOnly` activé par les commandes du site seulement : les tests de pkgsite restent valables | `cmd/worker`, `cmd/frontend`, `cmd/pkgsite` |
-| `cmd/pkgsite` lit un module Lyuba local tel quel (pas de go/packages) | `cmd/internal/pkgsite/server.go` |
-| marque Lyuba : logo, en-tête, pied de page, accueil en français ; ni gopher, ni Google (logo, Tag Manager, bandeau cookies) | `static/` |
-| page et scripts d'installation : `/install`, `/install.sh`, `/install.ps1` (ceux de `lyuba/install`) | `internal/frontend/server.go`, `static/frontend/install` |
-| déploiement sans Google Cloud | `lyuba-deploy/compose.yaml` |
+| a directory with `.lyu` files is a Lyuba package; the generated `.go` next to them is ignored | `internal/fetch/lyuba.go`, `internal/fetch/package.go` |
+| Lyuba docs: `LYU1` encoding (the sources), rendered by the compiler's parser and `lyuba/doc` | `internal/godoc/lyuba.go`, `encode.go`, `render.go` |
+| a module without `.lyu` files is excluded (403), quietly (no error in the logs) | `internal/fetch/lyuba.go`, `internal/queue/pgqueue/queue.go` |
+| `fetch.LyubaOnly` is enabled by the site's commands only: pkgsite's own tests stay valid | `cmd/worker`, `cmd/frontend`, `cmd/pkgsite` |
+| `cmd/pkgsite` reads a local Lyuba module as is (no go/packages) | `cmd/internal/pkgsite/server.go` |
+| Lyuba branding: logo, header, footer, home page; no gopher, nothing from Google (logo, Tag Manager, cookie banner) | `static/` |
+| install page and scripts: `/install`, `/install.sh`, `/install.ps1` (those of `lyuba/install`) | `internal/frontend/server.go`, `static/frontend/install` |
+| the header's active tab follows the page | `internal/frontend/page/page.go`, `static/shared/header` |
+| deployment without Google Cloud | `lyuba-deploy/compose.yaml` |
 
-Le chemin de module reste `golang.org/x/pkgsite` : le renommer toucherait chaque import et rendrait chaque rebase sur pkgsite pénible. `go.mod` dépend de `github.com/GlazKrovi/lyuba` ; tant que ce dépôt n'est pas public, un `replace` pointe vers `../lyuba` (le dépôt cloné à côté).
+The module path stays `golang.org/x/pkgsite`: renaming it would touch every import and make every rebase painful. `go.mod` depends on `github.com/GlazKrovi/lyuba`; until that repository is public, a `replace` points to `../lyuba` (the repository cloned next to this one).
 
-## Lancer
+## Run
 
-Doc d'un module Lyuba local, sans base de données :
+Docs of a local Lyuba module, without a database:
 
 ```sh
-go run ./cmd/pkgsite -open -list=false chemin/du/module
+go run ./cmd/pkgsite -open -list=false path/to/module
 ```
 
-Le site complet (Postgres, worker, frontend) :
+The full site (Postgres, worker, frontend):
 
 ```sh
 cd lyuba-deploy
-docker compose up -d     # http://localhost:8080 ; le worker lit l'index toutes les minutes
-docker compose down      # arrêt, la base est gardée (volume pgdata)
+docker compose up -d     # http://localhost:8080; the worker reads the index every minute
+docker compose down      # stop; the database is kept (pgdata volume)
 ```
 
-## Rebaser sur pkgsite
+## Rebase on pkgsite
 
 ```sh
 git remote add upstream https://go.googlesource.com/pkgsite
 git fetch upstream && git rebase upstream/master
 ```
 
-Les changements sont concentrés dans les fichiers ci-dessus ; `go test ./internal/fetch/ -run TestLyubaModule` vérifie le cœur. Sous windows, certains tests de pkgsite échouent déjà sur l'amont (fins de ligne) : comparer avec un `git worktree` de l'amont avant de chercher plus loin.
+The changes are concentrated in the files above; `go test ./internal/fetch/ -run TestLyubaModule` checks the core. On Windows, some of pkgsite's own tests already fail on upstream (line endings): compare with a `git worktree` of upstream before digging further.

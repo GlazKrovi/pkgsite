@@ -1,19 +1,18 @@
-# pkg.lyuba.dev : Postgres, worker (lit index.golang.org, télécharge les
-# modules Lyuba depuis proxy.golang.org, remplit la base) et frontend.
-# Rien de Google Cloud : file de travail dans Postgres, pas de profiler,
-# pas d'error reporting, pas de Tag Manager.
+# pkg.lyuba.dev: Postgres, worker (reads index.golang.org, downloads Lyuba
+# modules from proxy.golang.org, fills the database) and frontend.
+# Nothing from Google Cloud: the work queue lives in Postgres, no profiler,
+# no error reporting, no Tag Manager.
 #
-# Lancer depuis ce dossier, avec le dépôt lyuba à côté de pkgsite
-# (../../lyuba, utilisé par le replace de go.mod tant que lyuba n'est pas
-# publié) :
+# Run from this directory, with the lyuba repository next to pkgsite
+# (../../lyuba, used by go.mod's replace until lyuba is published):
 #
 #   docker compose up -d
 #   http://localhost:8080
 #
-# Variables (fichier .env à côté, ou environnement) :
-#   POSTGRES_PASSWORD        mot de passe de la base (défaut : postgres)
-#   LYUBA_POLL               période de lecture de l'index (défaut : 1m)
-#   GO_VERSION               image golang (défaut : 1.27)
+# Variables (a .env file next to this one, or the environment):
+#   POSTGRES_PASSWORD        database password (default: postgres)
+#   LYUBA_POLL               index polling period (default: 1m)
+#   GO_VERSION               golang image (default: 1.27)
 
 x-database: &database
   GO_DISCOVERY_DATABASE_HOST: db
@@ -45,7 +44,7 @@ services:
       interval: 2s
       retries: 30
 
-  # crée la base si besoin, puis applique les migrations de pkgsite
+  # creates the database if needed, then applies pkgsite's migrations
   migrate:
     <<: *go
     environment:
@@ -78,8 +77,8 @@ services:
       <<: *database
       PORT: "8080"
     command: go run ./cmd/frontend -host=0.0.0.0:8080 -queue=postgres
-    # le worker et le frontend créent la file dans Postgres au démarrage :
-    # si les deux le font en même temps, le perdant redémarre
+    # the worker and the frontend both create the queue in Postgres at
+    # startup: if they do it at the same time, the loser restarts
     restart: on-failure
     ports:
       - 8080:8080

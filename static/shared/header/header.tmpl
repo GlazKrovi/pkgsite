@@ -13,25 +13,25 @@
           <img class="go-Header-logo" src="/static/shared/logo/go-white.svg" alt="Lyuba">
         </a>
          <div class="skip-navigation-wrapper">
-            <a class="skip-to-content-link" aria-label="Aller au contenu" href="#main-content"> Aller au contenu </a>
+            <a class="skip-to-content-link" aria-label="Skip to main content" href="#main-content"> Skip to main content </a>
           </div>
         <div class="go-Header-rightContent">
           {{template "symbol_search_bar" .}}
           <ul class="go-Header-menu">
             <li class="go-Header-menuItem">
-              <a href="https://github.com/GlazKrovi/lyuba/blob/main/docs/specs.md" data-gtmc="nav link">Spécification</a>
+              <a href="https://github.com/GlazKrovi/lyuba/blob/main/docs/specs.md" data-gtmc="nav link">Specification</a>
             </li>
             <li class="go-Header-menuItem{{if eq .NavPath "/install"}} go-Header-menuItem--active{{end}}">
-              <a href="/install" data-gtmc="nav link">Installer</a>
+              <a href="/install" data-gtmc="nav link">Install</a>
             </li>
             <li class="go-Header-menuItem{{if ne .NavPath "/install"}} go-Header-menuItem--active{{end}}">
               <a href="/" data-gtmc="nav link">Packages</a>
             </li>
             <li class="go-Header-menuItem">
-              <a href="https://github.com/GlazKrovi/lyuba" data-gtmc="nav link">Code source</a>
+              <a href="https://github.com/GlazKrovi/lyuba" data-gtmc="nav link">Source code</a>
             </li>
           </ul>
-          <button class="go-Header-navOpen js-headerMenuButton go-Header-navOpen--white" data-gtmc="nav button" aria-label="Ouvrir la navigation">
+          <button class="go-Header-navOpen js-headerMenuButton go-Header-navOpen--white" data-gtmc="nav button" aria-label="Open navigation">
           </button>
         </div>
       </nav>
@@ -46,16 +46,16 @@
       </div>
       <ul class="go-NavigationDrawer-list">
         <li class="go-NavigationDrawer-listItem">
-          <a href="https://github.com/GlazKrovi/lyuba/blob/main/docs/specs.md">Spécification</a>
+          <a href="https://github.com/GlazKrovi/lyuba/blob/main/docs/specs.md">Specification</a>
         </li>
         <li class="go-NavigationDrawer-listItem{{if eq .NavPath "/install"}} go-NavigationDrawer-listItem--active{{end}}">
-          <a href="/install">Installer</a>
+          <a href="/install">Install</a>
         </li>
         <li class="go-NavigationDrawer-listItem{{if ne .NavPath "/install"}} go-NavigationDrawer-listItem--active{{end}}">
           <a href="/">Packages</a>
         </li>
         <li class="go-NavigationDrawer-listItem">
-          <a href="https://github.com/GlazKrovi/lyuba">Code source</a>
+          <a href="https://github.com/GlazKrovi/lyuba">Source code</a>
         </li>
       </ul>
     </nav>
@@ -71,15 +71,15 @@
     data-shortcut="/"
     data-shortcut-alt="search"
     data-gtmc="search form"
-    aria-label="Chercher un package"
+    aria-label="Search for a package"
     role="search"
   >
-    <input name="q" class="go-Input js-searchFocus" aria-label="Chercher un package" type="search"
+    <input name="q" class="go-Input js-searchFocus" aria-label="Search for a package" type="search"
         autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false"
         placeholder="{{.SearchPrompt}}"
         value="{{.Query}}" />
     <input name="m" value="{{.SearchMode}}" hidden>
-    <button class="go-Button go-Button--inverted" aria-label="Chercher">
+    <button class="go-Button go-Button--inverted" aria-label="Submit search">
       <img
         class="go-Icon"
         height="24"
@@ -90,7 +90,7 @@
     </button>
   </form>
   <button class="go-SearchForm-expandSearch js-expandSearch" data-gtmc="nav button"
-      aria-label="Ouvrir la recherche" data-test-id="expand-search">
+      aria-label="Open search" data-test-id="expand-search">
     <img class="go-Icon go-Icon--inverted" height="24" width="24"
         src="/static/shared/icon/search_gm_grey_24dp.svg" alt="">
 

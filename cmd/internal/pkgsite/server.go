@@ -219,8 +219,8 @@ func buildGetters(ctx context.Context, cfg getterConfig) ([]fetch.ModuleGetter, 
 
 	// Load local getters for each directory.
 	for dir, modules := range cfg.dirs {
-		// module Lyuba : go/packages n'y voit aucun package (pas de .go),
-		// le dossier est lu tel quel
+		// Lyuba module: go/packages sees no package in it (no .go files),
+		// so the directory is read as is
 		lyuba := false
 		for _, m := range modules {
 			if hasLyubaFiles(m.Dir) {
@@ -357,7 +357,7 @@ func runGo(dir string, args ...string) ([]byte, error) {
 	return out, nil
 }
 
-// hasLyubaFiles : le dossier d'un module contient-il des .lyu ?
+// hasLyubaFiles reports whether a module directory contains .lyu files.
 func hasLyubaFiles(dir string) bool {
 	found := false
 	filepath.WalkDir(dir, func(p string, d fs.DirEntry, err error) error {

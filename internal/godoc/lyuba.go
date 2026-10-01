@@ -4,10 +4,10 @@
 
 package godoc
 
-// Documentation des packages Lyuba (pkg.lyuba.dev). Un package Lyuba est
-// stocké sous l'encodage "LYU1" : ses sources .lyu, en json. Au rendu, le
-// parser du compilateur Lyuba les relit, et lyuba/doc en extrait ce qui
-// est exporté.
+// Documentation of Lyuba packages (pkg.lyuba.dev). A Lyuba package is stored
+// under the "LYU1" encoding: its .lyu sources, as json. At render time the
+// Lyuba compiler's parser reads them back, and lyuba/doc extracts what is
+// exported.
 
 import (
 	"bytes"
@@ -29,16 +29,16 @@ import (
 
 const lyubaEncodingType = "LYU1"
 
-// LyubaFile : un fichier .lyu d'un package.
+// LyubaFile is a .lyu file of a package.
 type LyubaFile struct {
-	Name string // relatif au dossier du package
+	Name string // relative to the package directory
 	Src  string
 }
 
-// IsLyuba : le package vient de fichiers .lyu.
+// IsLyuba reports whether the package comes from .lyu files.
 func (p *Package) IsLyuba() bool { return p.lyuba != nil }
 
-// EncodeLyuba encode les sources d'un package Lyuba, à stocker comme
+// EncodeLyuba encodes the sources of a Lyuba package, to be stored as
 // Documentation.Source.
 func EncodeLyuba(files []LyubaFile) ([]byte, error) {
 	b, err := json.Marshal(files)
@@ -56,8 +56,8 @@ func decodeLyuba(data []byte) (*Package, error) {
 	return &Package{lyuba: files}, nil
 }
 
-// ParseLyuba : la doc d'un package Lyuba ; les erreurs de syntaxe n'en
-// empêchent pas l'affichage (le parser reprend après une erreur).
+// ParseLyuba returns the documentation of a Lyuba package. Syntax errors do
+// not prevent displaying it (the parser recovers after an error).
 func ParseLyuba(files []LyubaFile) (*doc.Package, error) {
 	var asts []*ast.File
 	var errs []string
@@ -70,12 +70,12 @@ func ParseLyuba(files []LyubaFile) (*doc.Package, error) {
 	}
 	d := doc.New(asts)
 	if d.Name == "" {
-		return nil, fmt.Errorf("aucun package Lyuba lisible : %s", strings.Join(errs, " ; "))
+		return nil, fmt.Errorf("no readable Lyuba package: %s", strings.Join(errs, " ; "))
 	}
 	return d, nil
 }
 
-// lyubaDocInfo : synopsis, imports et symboles (recherche, historique).
+// lyubaDocInfo returns the synopsis, imports and symbols (search, history).
 func (p *Package) lyubaDocInfo() (string, []string, []*internal.Symbol, error) {
 	d, err := ParseLyuba(p.lyuba)
 	if err != nil {
@@ -109,7 +109,7 @@ func firstLine(s string) string {
 	return s
 }
 
-// ===== rendu html, avec les classes css de pkgsite
+// ===== html rendering, with pkgsite's css classes
 
 type lyubaView struct {
 	*doc.Package
@@ -125,8 +125,8 @@ var lyubaFuncs = template.FuncMap{
 	},
 }
 
-// renderDocText : un commentaire en paragraphes (ligne vide), avec les
-// liens http(s) cliquables.
+// renderDocText renders a comment as paragraphs (blank line), with clickable
+// http(s) links.
 func renderDocText(s string) template.HTML {
 	if s == "" {
 		return ""
@@ -146,40 +146,40 @@ var lyubaBody = template.Must(template.New("body").Funcs(lyubaFuncs).Parse(`
 <div class="Documentation-content js-docContent">
 {{- if .Doc}}
   <section class="Documentation-overview">
-    <h3 tabindex="-1" id="pkg-overview" class="Documentation-overviewHeader">Vue d'ensemble <a href="#pkg-overview" aria-label="Aller à la vue d'ensemble">¶</a></h3>
+    <h3 tabindex="-1" id="pkg-overview" class="Documentation-overviewHeader">Overview <a href="#pkg-overview" aria-label="Go to Overview">¶</a></h3>
     {{para .Doc}}
   </section>
 {{- end}}
 {{- if or .Consts .Types}}
   <section class="Documentation-index">
-    <h3 id="pkg-index" class="Documentation-indexHeader">Index <a href="#pkg-index" aria-label="Aller à l'index">¶</a></h3>
+    <h3 id="pkg-index" class="Documentation-indexHeader">Index <a href="#pkg-index" aria-label="Go to Index">¶</a></h3>
     <ul class="Documentation-indexList">
-      {{- if .Consts}}<li class="Documentation-indexConstants"><a href="#pkg-constants">Constantes</a></li>{{end}}
+      {{- if .Consts}}<li class="Documentation-indexConstants"><a href="#pkg-constants">Constants</a></li>{{end}}
       {{- range .Types}}{{$t := .Name}}
       <li class="Documentation-indexType"><a href="#{{.Name}}">type {{.Name}} {{.Kind}}</a></li>
       {{- with .Methods}}<li><ul class="Documentation-indexTypeMethods">{{range .}}<li><a href="#{{$t}}.{{.Name}}">{{first .Decl}}</a></li>{{end}}</ul></li>{{end}}
       {{- end}}
     </ul>
   </section>
-  <h3 tabindex="-1" id="pkg-constants" class="Documentation-constantsHeader">Constantes <a href="#pkg-constants" aria-label="Aller aux constantes">¶</a></h3>
+  <h3 tabindex="-1" id="pkg-constants" class="Documentation-constantsHeader">Constants <a href="#pkg-constants" aria-label="Go to Constants">¶</a></h3>
   <section class="Documentation-constants">
   {{- range .Consts}}
     <div class="Documentation-declaration" id="{{.Name}}">
-      <span class="Documentation-declarationLink"><a href="{{$.Src .File .Line}}">Voir la source</a></span>
+      <span class="Documentation-declarationLink"><a href="{{$.Src .File .Line}}">View Source</a></span>
       <pre>{{.Decl}}</pre>
     </div>
     {{para .Doc}}
   {{- else}}
-    <p class="Documentation-empty">Aucune constante exportée.</p>
+    <p class="Documentation-empty">No exported constants.</p>
   {{- end}}
   </section>
-  <h3 tabindex="-1" id="pkg-types" class="Documentation-typesHeader">Types <a href="#pkg-types" aria-label="Aller aux types">¶</a></h3>
+  <h3 tabindex="-1" id="pkg-types" class="Documentation-typesHeader">Types <a href="#pkg-types" aria-label="Go to Types">¶</a></h3>
   <section class="Documentation-types">
   {{- range .Types}}{{$t := .}}
     <div class="Documentation-type">
       <h4 tabindex="-1" id="{{.Name}}" data-kind="type" class="Documentation-typeHeader">
         <span>type <a class="Documentation-source" href="{{$.Src .File .Line}}">{{.Name}}</a> <span class="Documentation-kind">{{.Kind}}</span></span>
-        <a class="Documentation-idLink" href="#{{.Name}}" aria-label="Aller à {{.Name}}">¶</a>
+        <a class="Documentation-idLink" href="#{{.Name}}" aria-label="Go to {{.Name}}">¶</a>
       </h4>
       <div class="Documentation-declaration"><pre>{{.Decl}}</pre></div>
       {{para .Doc}}
@@ -194,7 +194,7 @@ var lyubaBody = template.Must(template.New("body").Funcs(lyubaFuncs).Parse(`
       <div class="Documentation-typeMethod">
         <h4 tabindex="-1" id="{{$t.Name}}.{{.Name}}" data-kind="method" class="Documentation-typeMethodHeader">
           <span>{{$t.Name}}.<a class="Documentation-source" href="{{$.Src .File .Line}}">{{.Name}}</a></span>
-          <a class="Documentation-idLink" href="#{{$t.Name}}.{{.Name}}" aria-label="Aller à {{$t.Name}}.{{.Name}}">¶</a>
+          <a class="Documentation-idLink" href="#{{$t.Name}}.{{.Name}}" aria-label="Go to {{$t.Name}}.{{.Name}}">¶</a>
         </h4>
         <div class="Documentation-declaration"><pre>{{.Decl}}</pre></div>
         {{para .Doc}}
@@ -202,7 +202,7 @@ var lyubaBody = template.Must(template.New("body").Funcs(lyubaFuncs).Parse(`
       {{- end}}
     </div>
   {{- else}}
-    <p class="Documentation-empty">Aucun type exporté.</p>
+    <p class="Documentation-empty">No exported types.</p>
   {{- end}}
   </section>
 {{- end}}
@@ -210,10 +210,10 @@ var lyubaBody = template.Must(template.New("body").Funcs(lyubaFuncs).Parse(`
 
 var lyubaOutline = template.Must(template.New("outline").Funcs(lyubaFuncs).Parse(`
 <ul>
-  {{- if .Doc}}<li><a href="#pkg-overview">Vue d'ensemble</a></li>{{end}}
+  {{- if .Doc}}<li><a href="#pkg-overview">Overview</a></li>{{end}}
   {{- if or .Consts .Types}}
   <li class="DocNav-overview"><a href="#pkg-index">Index</a></li>
-  <li class="DocNav-constants"><a href="#pkg-constants">Constantes</a></li>
+  <li class="DocNav-constants"><a href="#pkg-constants">Constants</a></li>
   <li class="DocNav-types"><a href="#pkg-types">Types</a>
     <ul>
     {{- range .Types}}{{$t := .Name}}
@@ -228,9 +228,9 @@ var lyubaOutline = template.Must(template.New("outline").Funcs(lyubaFuncs).Parse
 
 var lyubaMobile = template.Must(template.New("mobile").Funcs(lyubaFuncs).Parse(`
 <optgroup label="Documentation">
-  {{- if .Doc}}<option value="pkg-overview">Vue d'ensemble</option>{{end}}
+  {{- if .Doc}}<option value="pkg-overview">Overview</option>{{end}}
   {{- if or .Consts .Types}}<option value="pkg-index">Index</option>{{end}}
-  {{- if .Consts}}<option value="pkg-constants">Constantes</option>{{end}}
+  {{- if .Consts}}<option value="pkg-constants">Constants</option>{{end}}
 </optgroup>
 {{- if .Types}}
 <optgroup label="Types">
@@ -241,7 +241,7 @@ var lyubaMobile = template.Must(template.New("mobile").Funcs(lyubaFuncs).Parse(`
 </optgroup>
 {{- end}}`))
 
-// renderLyuba : les trois parties html de la page d'un package Lyuba.
+// renderLyuba returns the three html parts of a Lyuba package page.
 func (p *Package) renderLyuba(ctx context.Context, innerPath string, sourceInfo *source.Info) (*dochtml.Parts, error) {
 	d, err := ParseLyuba(p.lyuba)
 	if err != nil {
@@ -272,7 +272,7 @@ func (p *Package) renderLyuba(ctx context.Context, innerPath string, sourceInfo 
 	if err != nil {
 		return nil, err
 	}
-	// html/template a déjà échappé tout ce qui vient des sources
+	// html/template has already escaped everything that comes from the sources
 	return &dochtml.Parts{
 		Body:          uncheckedconversions.HTMLFromStringKnownToSatisfyTypeContract(body),
 		Outline:       uncheckedconversions.HTMLFromStringKnownToSatisfyTypeContract(outline),

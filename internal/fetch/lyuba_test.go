@@ -15,29 +15,29 @@ import (
 	"golang.org/x/pkgsite/internal/godoc"
 )
 
-const formesLyu = `// Package formes : des formes géométriques.
-package formes
+const shapesLyu = `// Package shapes: geometric shapes.
+package shapes
 
-// Carre : un carré, défini par son côté.
-type Carre record {
+// Square: a square, defined by its side.
+type Square record {
     New({
-        Cote: float, // le côté
-        etiquette = "carré",
+        Side: float, // the side
+        label = "square",
     })
 
-    // Aire : la surface du carré.
-    Aire(): float { return Cote * Cote }
+    // Area: the surface of the square.
+    Area(): float { return Side * Side }
 }
 
-type unite record {}
+type unit record {}
 `
 
 func lyubaModule() fstest.MapFS {
 	return fstest.MapFS{
-		"go.mod":               {Data: []byte("module exemple.dev/geo\n\ngo 1.27.0\n")},
-		"formes/formes.lyu":    {Data: []byte(formesLyu)},
-		"formes/formes.lyu.go": {Data: []byte("package formes\n\n// go généré, à ignorer\nfunc Ignore() {}\n")},
-		"outils/outil.go":      {Data: []byte("package outils\n")},
+		"go.mod":               {Data: []byte("module example.dev/geo\n\ngo 1.27.0\n")},
+		"shapes/shapes.lyu":    {Data: []byte(shapesLyu)},
+		"shapes/shapes.lyu.go": {Data: []byte("package shapes\n\n// generated go, to ignore\nfunc Ignore() {}\n")},
+		"tools/tool.go":        {Data: []byte("package tools\n")},
 	}
 }
 
@@ -46,16 +46,16 @@ func TestLyubaModule(t *testing.T) {
 	LyubaOnly = true
 	ctx := context.Background()
 
-	metas, modInfo, _, err := extractPackageMetas(ctx, "exemple.dev/geo", "v1.0.0", lyubaModule())
+	metas, modInfo, _, err := extractPackageMetas(ctx, "example.dev/geo", "v1.0.0", lyubaModule())
 	if err != nil {
 		t.Fatal(err)
 	}
-	// outils (du go seul, dans un module Lyuba) n'est pas un package du site
-	if len(metas) != 1 || metas[0].name != "formes" || metas[0].synopsis != "Package formes : des formes géométriques." {
+	// tools (plain Go in a Lyuba module) is not a package of the site
+	if len(metas) != 1 || metas[0].name != "shapes" || metas[0].synopsis != "Package shapes: geometric shapes." {
 		t.Fatalf("%+v", metas)
 	}
 
-	pkg, pvs, err := extractPackage(ctx, "exemple.dev/geo", "exemple.dev/geo/formes", lyubaModule(), nil, nil, modInfo)
+	pkg, pvs, err := extractPackage(ctx, "example.dev/geo", "example.dev/geo/shapes", lyubaModule(), nil, nil, modInfo)
 	if err != nil || pvs.Status != 200 {
 		t.Fatal(err, pvs)
 	}
@@ -70,34 +70,34 @@ func TestLyubaModule(t *testing.T) {
 			names = append(names, c.Name)
 		}
 	}
-	if strings.Join(names, " ") != "Carre Carre.Aire" {
+	if strings.Join(names, " ") != "Square Square.Area" {
 		t.Error(names)
 	}
 
-	// rendu : ce que verra la page du package
+	// rendering: what the package page will show
 	dp, err := godoc.DecodePackage(d.Source)
 	if err != nil {
 		t.Fatal(err)
 	}
-	parts, err := dp.Render(ctx, "formes", nil, modInfo, nil, internal.BuildContext{})
+	parts, err := dp.Render(ctx, "shapes", nil, modInfo, nil, internal.BuildContext{})
 	if err != nil {
 		t.Fatal(err)
 	}
 	body := parts.Body.String()
-	for _, want := range []string{`id="Carre"`, "type Carre record {", "Cote: float, // le côté", `id="Carre.Aire"`, "Aire : la surface du carré.", "des formes géométriques"} {
+	for _, want := range []string{`id="Square"`, "type Square record {", "Side: float, // the side", `id="Square.Area"`, "Area: the surface of the square.", "geometric shapes"} {
 		if !strings.Contains(body, want) {
-			t.Errorf("sans %q :\n%s", want, body)
+			t.Errorf("missing %q:\n%s", want, body)
 		}
 	}
-	if strings.Contains(body, "unite") {
-		t.Error("type privé affiché")
+	if strings.Contains(body, "unit") {
+		t.Error("private type displayed")
 	}
-	if !strings.Contains(parts.Outline.String(), `href="#Carre.Aire"`) {
+	if !strings.Contains(parts.Outline.String(), `href="#Square.Area"`) {
 		t.Error(parts.Outline)
 	}
 
-	// un module sans .lyu n'est pas un module Lyuba
-	_, _, _, err = extractPackageMetas(ctx, "exemple.dev/go", "v1.0.0", fstest.MapFS{"a/a.go": {Data: []byte("package a\n")}})
+	// a module without .lyu files is not a Lyuba module
+	_, _, _, err = extractPackageMetas(ctx, "example.dev/go", "v1.0.0", fstest.MapFS{"a/a.go": {Data: []byte("package a\n")}})
 	if !errors.Is(err, ErrNotLyuba) {
 		t.Error(err)
 	}

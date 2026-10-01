@@ -22,17 +22,17 @@ type searchTip struct {
 
 var searchTips = []searchTip{
 	{
-		"Chercher un package, par exemple",
+		"Search for a package, for example",
 		"formes",
 		"verger",
 	},
 	{
-		"Chercher un symbole (type, méthode, constante), par exemple",
+		"Search for a symbol (type, method, constant), for example",
 		"Carre",
 		"Fruit.Decrire",
 	},
 	{
-		"Chercher dans un package avec le filtre #. Par exemple",
+		"Search for symbols within a package using the # filter. For example",
 		"formes #Aire",
 		"#Panier verger",
 	},

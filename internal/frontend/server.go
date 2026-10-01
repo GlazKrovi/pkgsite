@@ -238,9 +238,9 @@ func (s *Server) Install(handle func(string, http.Handler), cacher Cacher, authV
 	handle("GET /search-help", s.staticPageHandler("search-help", "Search Help"))
 	handle("GET /license-policy", s.licensePolicyHandler())
 	handle("GET /about", s.staticPageHandler("about", "About"))
-	// installation de Lyuba : la page, et les scripts de la version de
-	// lyuba dont dépend ce site (curl .../install.sh | sh)
-	handle("GET /install", s.staticPageHandler("install", "Installer Lyuba"))
+	// Lyuba installation: the page, and the scripts of the lyuba version this
+	// site depends on (curl .../install.sh | sh)
+	handle("GET /install", s.staticPageHandler("install", "Install Lyuba"))
 	handle("GET /install.sh", serveScript(lyubainstall.Sh, "text/x-shellscript; charset=utf-8"))
 	handle("GET /install.ps1", serveScript(lyubainstall.PowerShell, "text/plain; charset=utf-8"))
 	handle("GET /badge/", http.HandlerFunc(s.badgeHandler))
@@ -565,9 +565,9 @@ func (s *Server) newBasePage(r *http.Request, title string) pagepkg.BasePage {
 	var searchPrompt string
 	if s.localMode {
 		// Symbol search is not supported in local mode.
-		searchPrompt = "Chercher un package"
+		searchPrompt = "Search packages"
 	} else {
-		searchPrompt = "Chercher un package ou un symbole"
+		searchPrompt = "Search packages or symbols"
 	}
 
 	return pagepkg.BasePage{
@@ -792,8 +792,8 @@ func serveFileFS(w http.ResponseWriter, r *http.Request, fsys fs.FS, name string
 	fs.ServeHTTP(w, r)
 }
 
-// serveScript : un script d'installation, en texte (lisible avant de le
-// lancer), jamais mis en cache longtemps.
+// serveScript serves an install script as plain text (readable before
+// running it), cached only briefly.
 func serveScript(body, contentType string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", contentType)

@@ -4,10 +4,10 @@
 
 package fetch
 
-// Packages Lyuba (pkg.lyuba.dev). Un dossier qui contient des .lyu est un
-// package Lyuba : seuls ses .lyu comptent, le .go généré à côté (publié
-// pour les modules go, cf lyuba publish) est ignoré. Un module sans aucun
-// .lyu n'est pas un module Lyuba : il reste sur pkg.go.dev.
+// Lyuba packages (pkg.lyuba.dev). A directory that contains .lyu files is a
+// Lyuba package: only its .lyu files count, the generated .go next to them
+// (published for Go modules, see lyuba publish) is ignored. A module with no
+// .lyu file at all is not a Lyuba module: it belongs on pkg.go.dev.
 
 import (
 	"context"
@@ -23,22 +23,24 @@ import (
 	"golang.org/x/pkgsite/internal/stdlib"
 )
 
-// LyubaOnly : ignorer les modules sans .lyu. Activé par les commandes de
-// pkg.lyuba.dev (worker, frontend, pkgsite) ; faux par défaut, pour que
-// les tests de pkgsite, écrits sur des modules go, restent valables.
+// LyubaOnly makes the fetcher skip modules without .lyu files. It is enabled
+// by the pkg.lyuba.dev commands (worker, frontend, pkgsite) and off by
+// default, so that pkgsite's own tests, written against Go modules, stay valid.
 var LyubaOnly = false
 
-// ErrNotLyuba : le module ne contient aucun .lyu. C'est une exclusion
-// (statut 403, comme les modules exclus de pkgsite), pas une erreur : le
-// worker voit passer tous les modules go de l'index.
-var ErrNotLyuba = fmt.Errorf("aucun fichier .lyu : pas un module Lyuba (voir pkg.go.dev) : %w", derrors.Excluded)
+// ErrNotLyuba reports a module with no .lyu file. It is an exclusion (status
+// 403, like the modules excluded by pkgsite), not an error: the worker sees
+// every Go module of the index go by.
+var ErrNotLyuba = fmt.Errorf("no .lyu file: not a Lyuba module (see pkg.go.dev): %w", derrors.Excluded)
 
-// isSourceFile : les fichiers qui font un package, go ou Lyuba.
+// isSourceFile reports whether name is a file that makes up a package,
+// Go or Lyuba.
 func isSourceFile(name string) bool {
 	return strings.HasSuffix(name, ".go") || strings.HasSuffix(name, ".lyu")
 }
 
-// lyubaFiles : les .lyu de la liste ; vide si ce n'est pas un package Lyuba.
+// lyubaFiles returns the .lyu files of paths; empty if it is not a Lyuba
+// package.
 func lyubaFiles(paths []string) []string {
 	var out []string
 	for _, p := range paths {
@@ -68,7 +70,7 @@ func lyubaImportPath(modulePath, innerPath string) string {
 	return path.Join(modulePath, innerPath)
 }
 
-// loadLyubaPackageMeta : nom et synopsis d'un package Lyuba.
+// loadLyubaPackageMeta returns the name and synopsis of a Lyuba package.
 func loadLyubaPackageMeta(contentDir fs.FS, paths []string, innerPath string, modInfo *godoc.ModuleInfo) (*packageMeta, error) {
 	files, err := readLyuba(contentDir, paths)
 	if err != nil {
@@ -81,9 +83,8 @@ func loadLyubaPackageMeta(contentDir fs.FS, paths []string, innerPath string, mo
 	return &packageMeta{path: lyubaImportPath(modInfo.ModulePath, innerPath), name: d.Name, synopsis: d.Synopsis}, nil
 }
 
-// loadLyubaPackage : un package Lyuba, une seule documentation pour toutes
-// les plateformes (pas de contraintes de build par plateforme en Lyuba
-// pour l'instant).
+// loadLyubaPackage loads a Lyuba package, with a single documentation for
+// all platforms (Lyuba has no per-platform build constraints for now).
 func loadLyubaPackage(ctx context.Context, contentDir fs.FS, paths []string, innerPath string,
 	sourceInfo *source.Info, modInfo *godoc.ModuleInfo) (*goPackage, error) {
 	files, err := readLyuba(contentDir, paths)
@@ -104,7 +105,7 @@ func loadLyubaPackage(ctx context.Context, contentDir fs.FS, paths []string, inn
 	}
 	synopsis, imports, api, err := decoded.DocInfo(ctx, innerPath, sourceInfo, modInfo)
 	if err != nil {
-		return nil, fmt.Errorf("doc Lyuba : %w", err)
+		return nil, fmt.Errorf("Lyuba doc: %w", err)
 	}
 	for _, s := range api {
 		s.GOOS, s.GOARCH = internal.All, internal.All

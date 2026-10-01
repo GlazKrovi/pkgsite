@@ -292,8 +292,9 @@ func extractPackageMetas(ctx context.Context, modulePath, resolvedVersion string
 	if LyubaOnly && !hasLyuba {
 		return nil, nil, nil, ErrNotLyuba
 	}
-	// un dossier Lyuba ne garde que ses .lyu (le .go généré est ignoré) ;
-	// un dossier sans .lyu d'un module Lyuba : du go à côté, ignoré
+	// a Lyuba directory keeps only its .lyu files (the generated .go is
+	// ignored); a directory without .lyu in a Lyuba module is plain Go
+	// next to it, and ignored
 	for dir, files := range dirs {
 		if lyu := lyubaFiles(files); len(lyu) > 0 {
 			dirs[dir] = lyu

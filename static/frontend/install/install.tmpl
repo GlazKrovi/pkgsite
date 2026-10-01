@@ -7,23 +7,23 @@
 {{define "main"}}
   <main class="go-Container" id="main-content">
     <div class="go-Content">
-      <h1>Installer Lyuba</h1>
-      <p>Lyuba compile en go : il faut <a href="https://go.dev/dl/">go</a> 1.27 ou plus (le script propose de l'installer s'il manque).</p>
+      <h1>Install Lyuba</h1>
+      <p>Lyuba compiles to Go: you need <a href="https://go.dev/dl/">Go</a> 1.27 or later (the script offers to install it if it is missing).</p>
       <h2>Linux, macOS, Git Bash</h2>
       <pre>curl -fsSL https://pkg.lyuba.dev/install.sh | sh</pre>
       <h2>Windows (PowerShell)</h2>
       <pre>irm https://pkg.lyuba.dev/install.ps1 | iex</pre>
-      <p>Le script est interactif : il demande avant chaque action (Entrée = réponse par défaut). Il installe la commande <code>lyuba</code>, propose d'ajouter le dossier des binaires go au <code>PATH</code>, puis gopls (survol, définition et complétion dans l'éditeur), goreleaser (binaires de <code>lyuba publish</code>) et l'extension VS Code.</p>
+      <p>The script is interactive: it asks before each action (Enter accepts the default). It installs the <code>lyuba</code> command, offers to add the Go binaries folder to your <code>PATH</code>, then gopls (hover, go to definition and completion in your editor), goreleaser (binaries for <code>lyuba publish</code>) and the VS Code extension.</p>
       <ul>
-        <li><code>LYUBA_OUI=1</code> : toutes les réponses par défaut, sans question (CI)</li>
-        <li><code>LYUBA_VERSION=v1.2.3</code> : une version précise</li>
-        <li><code>LYUBA_PATH=0</code> : ne jamais modifier le <code>PATH</code></li>
+        <li><code>LYUBA_YES=1</code>: accept every default, no questions (CI)</li>
+        <li><code>LYUBA_VERSION=v1.2.3</code>: a specific version</li>
+        <li><code>LYUBA_PATH=0</code>: never modify the <code>PATH</code></li>
       </ul>
-      <p>Lire le script avant de le lancer : <a href="/install.sh">install.sh</a>, <a href="/install.ps1">install.ps1</a>.</p>
-      <h2>Sans script</h2>
+      <p>Read the script before running it: <a href="/install.sh">install.sh</a>, <a href="/install.ps1">install.ps1</a>.</p>
+      <h2>Without the script</h2>
       <pre>go install github.com/GlazKrovi/lyuba/cmd/lyuba@latest</pre>
-      <h2>Premier programme</h2>
-      <pre>mkdir bonjour &amp;&amp; cd bonjour
+      <h2>First program</h2>
+      <pre>mkdir hello &amp;&amp; cd hello
 lyuba init
 lyuba run .</pre>
     </div>
