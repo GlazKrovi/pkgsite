@@ -44,6 +44,10 @@ type BasePage struct {
 	// Enables the two and three column layouts on the unit page.
 	UseResponsiveLayout bool
 
+	// NavPath est le chemin de la page, pour marquer l'onglet actif de
+	// l'en-tête (pkg.lyuba.dev).
+	NavPath string
+
 	// SearchPrompt is the prompt/placeholder for search input.
 	SearchPrompt string
 

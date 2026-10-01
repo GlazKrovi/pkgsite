@@ -572,6 +572,7 @@ func (s *Server) newBasePage(r *http.Request, title string) pagepkg.BasePage {
 
 	return pagepkg.BasePage{
 		HTMLTitle:          title,
+		NavPath:            r.URL.Path,
 		Query:              q,
 		Experiments:        experiment.FromContext(r.Context()),
 		DevMode:            s.devMode,

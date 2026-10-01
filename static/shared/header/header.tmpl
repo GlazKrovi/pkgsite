@@ -21,10 +21,10 @@
             <li class="go-Header-menuItem">
               <a href="https://github.com/GlazKrovi/lyuba/blob/main/docs/specs.md" data-gtmc="nav link">Spécification</a>
             </li>
-            <li class="go-Header-menuItem">
+            <li class="go-Header-menuItem{{if eq .NavPath "/install"}} go-Header-menuItem--active{{end}}">
               <a href="/install" data-gtmc="nav link">Installer</a>
             </li>
-            <li class="go-Header-menuItem go-Header-menuItem--active">
+            <li class="go-Header-menuItem{{if ne .NavPath "/install"}} go-Header-menuItem--active{{end}}">
               <a href="/" data-gtmc="nav link">Packages</a>
             </li>
             <li class="go-Header-menuItem">
@@ -48,10 +48,10 @@
         <li class="go-NavigationDrawer-listItem">
           <a href="https://github.com/GlazKrovi/lyuba/blob/main/docs/specs.md">Spécification</a>
         </li>
-        <li class="go-NavigationDrawer-listItem">
+        <li class="go-NavigationDrawer-listItem{{if eq .NavPath "/install"}} go-NavigationDrawer-listItem--active{{end}}">
           <a href="/install">Installer</a>
         </li>
-        <li class="go-NavigationDrawer-listItem go-NavigationDrawer-listItem--active">
+        <li class="go-NavigationDrawer-listItem{{if ne .NavPath "/install"}} go-NavigationDrawer-listItem--active{{end}}">
           <a href="/">Packages</a>
         </li>
         <li class="go-NavigationDrawer-listItem">
