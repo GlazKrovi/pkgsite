@@ -6,7 +6,7 @@
 
 {{define "canonical"}}
   {{if .IsLatestMinor}}
-    <link rel="canonical" href="https://pkg.go.dev/{{.Unit.Path}}">
+    <link rel="canonical" href="https://pkg.lyuba.dev/{{.Unit.Path}}">
   {{else}}
     <meta name="robots" content="noindex">
   {{end}}
@@ -60,7 +60,7 @@
           {{block "unit-doc" .Details}}{{end}}
         {{else}}
           <div class="UnitDetails-contentEmpty">
-            <img width="945" height="1200" src="/static/shared/gopher/airplane-1200x945.svg" alt="The Go Gopher"/>
+            <img width="945" height="1200" src="/static/shared/gopher/illustration.svg" alt=""/>
             <p>Documentation not displayed due to license restrictions.</p>
             <p>See our <a href="/license-policy">license policy</a>.</p>
           </div>

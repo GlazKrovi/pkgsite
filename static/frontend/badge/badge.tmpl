@@ -5,7 +5,7 @@
 -->
 
 {{define "description"}}
-  <meta name="description" content="Create a badge to link to pkg.go.dev from your project website or README file.">
+  <meta name="description" content="Create a badge to link to pkg.lyuba.dev from your project website or README file.">
 {{end}}
 
 {{define "pre-content"}}
@@ -17,17 +17,17 @@
     <div class="go-Content Badge">
       <form class="go-Form" action="/badge/" data-gtmc="badge form" aria-label="Create a Badge">
         <h1>Create a badge</h1>
-        <p>Create a badge to link to pkg.go.dev from your project website or README file.</p>
+        <p>Create a badge to link to pkg.lyuba.dev from your project website or README file.</p>
         <label class="go-Label">
           Badge
-          <a class="js-badgeExampleButton" href="https://pkg.go.dev/{{.LinkPath}}">
-            <img class="Badge-badgeIcon" src="/static/frontend/badge/badge.svg" alt="Go Reference">
+          <a class="js-badgeExampleButton" href="https://pkg.lyuba.dev/{{.LinkPath}}">
+            <img class="Badge-badgeIcon" src="/static/frontend/badge/badge.svg" alt="Lyuba Reference">
           </a>
         </label>
         <label class="go-Label">
           URL
           <input name="path" class="go-Input js-toolsPathInput"
-              value="{{if .LinkPath}}https://pkg.go.dev/{{.LinkPath}}{{end}}" placeholder="e.g., https://pkg.go.dev/golang.org/x/pkgsite">
+              value="{{if .LinkPath}}https://pkg.lyuba.dev/{{.LinkPath}}{{end}}" placeholder="e.g., https://pkg.go.dev/golang.org/x/pkgsite">
         </label>
         <button type="submit" class="go-Button">{{if .LinkPath}}Update{{else}}Create{{end}}</button>
       </form>
@@ -36,7 +36,7 @@
           <label class="go-Label">HTML
             <div class="go-InputGroup">
               <input class="go-Input" readonly
-                  value='<a href="https://pkg.go.dev/{{.LinkPath}}"><img src="https://pkg.go.dev/{{.BadgePath}}" alt="Go Reference"></a>'>
+                  value='<a href="https://pkg.lyuba.dev/{{.LinkPath}}"><img src="https://pkg.lyuba.dev/{{.BadgePath}}" alt="Lyuba Reference"></a>'>
               <button
                 class="go-Button go-Button--inverted go-Clipboard js-clipboard"
                 aria-label="Copy to Clipboard"
@@ -55,7 +55,7 @@
           <label class="go-Label">Markdown
             <div class="go-InputGroup">
               <input class="go-Input" readonly
-                  value="[![Go Reference](https://pkg.go.dev/{{.BadgePath}})](https://pkg.go.dev/{{.LinkPath}})">
+                  value="[![Lyuba Reference](https://pkg.lyuba.dev/{{.BadgePath}})](https://pkg.lyuba.dev/{{.LinkPath}})">
               <button
                 class="go-Button go-Button--inverted go-Clipboard js-clipboard"
                 aria-label="Copy to Clipboard"
@@ -73,8 +73,8 @@
           </label>
         {{else}}
           <div class="Badge-gopherLanding">
-            <img width="1200" height="945" src="/static/shared/gopher/airplane-1200x945.svg" alt="The Go Gopher"/>
-            <p class="go-textSubtle">Type a pkg.go.dev URL above to create a badge link.</p>
+            <img width="1200" height="945" src="/static/shared/gopher/illustration.svg" alt=""/>
+            <p class="go-textSubtle">Type a pkg.lyuba.dev URL above to create a badge link.</p>
           </div>
         {{end}}
       </div>

@@ -4,7 +4,7 @@
   license that can be found in the LICENSE file.
 -->
 
-{{define "title"}}<title>{{.MessageData}} - Go Packages</title>{{end}}
+{{define "title"}}<title>{{.MessageData}} - Lyuba Packages</title>{{end}}
 
 {{define "pre-content"}}
   <link href="/static/frontend/fetch/fetch.min.css?version={{.AppVersionLabel}}" rel="stylesheet">
@@ -28,7 +28,7 @@
       <p class="Fetch-messageSecondary js-fetchMessageSecondary" aria-live="polite">
         Check that you entered the URL correctly,
         try fetching it following the <a href="/about#adding-a-package">instructions here</a>,
-        or request to add “{{.MessageData}}” to pkg.go.dev.
+        or request to add “{{.MessageData}}” to pkg.lyuba.dev.
       </p>
       <button class="go-Button Fetch-button js-fetchButton" data-test-id="fetch-button" aria-live="polite">
         Request “{{.MessageData}}”

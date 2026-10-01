@@ -31,10 +31,10 @@
     {{block "canonical" .}}{{end}}
     <link href="/static/frontend/frontend.min.css?version={{.AppVersionLabel}}" rel="stylesheet">
     {{if not .LocalMode}}
-    <link rel="search" type="application/opensearchdescription+xml" href="/opensearch.xml" title="Go Packages">
+    <link rel="search" type="application/opensearchdescription+xml" href="/opensearch.xml" title="Lyuba Packages">
     {{end}}
     {{block "title" .}}
-      <title>{{if .HTMLTitle}}{{.HTMLTitle}} - {{end}}Go Packages</title>
+      <title>{{if .HTMLTitle}}{{.HTMLTitle}} - {{end}}Lyuba Packages</title>
     {{end}}
     {{block "pre-content" .}}{{end}}
   </head>
@@ -59,28 +59,8 @@
     {{template "main" .}}
     {{template "footer" .}}
     {{template "modals" .}}
-    {{if not .LocalMode}}
-      <section class="Cookie-notice js-cookieNotice">
-        <div>go.dev uses cookies from Google to deliver and enhance the quality of its services and to
-        analyze traffic. <a target=_blank href="https://policies.google.com/technologies/cookies">Learn more.</a></div>
-        <div><button class="go-Button">Okay</button></div>
-      </section>
-    {{end}}
-    {{if .GoogleTagManagerID}}
-      <script>
-        // this will throw if the querySelector can’t find the element
-        const gtmId = document.querySelector('.js-gtmID').dataset.gtmid;
-        if (!gtmId) {
-          throw new Error('Google Tag Manager ID not found');
-        }
-        loadScript(`https://www.googletagmanager.com/gtm.js?id=${gtmId}`);
-      </script>
-      <noscript>
-        <iframe src="https://www.googletagmanager.com/ns.html?id={{.GoogleTagManagerID}}"
-                height="0" width="0" style="display:none;visibility:hidden">
-        </iframe>
-      </noscript>
-    {{end}}
+    {{/* pkg.lyuba.dev : aucun cookie de suivi, donc pas de bandeau */}}
+    {{/* pkg.lyuba.dev : pas de Google Tag Manager */}}
     {{block "post-content" .}}{{end}}
   </body>
 </html>

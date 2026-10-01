@@ -290,7 +290,7 @@ func extractPackageMetas(ctx context.Context, modulePath, resolvedVersion string
 	}
 
 	if LyubaOnly && !hasLyuba {
-		return nil, nil, nil, fmt.Errorf("%w : %w", ErrModuleContainsNoPackages, ErrNotLyuba)
+		return nil, nil, nil, ErrNotLyuba
 	}
 	// un dossier Lyuba ne garde que ses .lyu (le .go généré est ignoré) ;
 	// un dossier sans .lyu d'un module Lyuba : du go à côté, ignoré

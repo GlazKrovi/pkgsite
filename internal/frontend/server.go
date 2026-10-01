@@ -10,6 +10,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	lyubainstall "github.com/GlazKrovi/lyuba/install"
 	"io"
 	"io/fs"
 	"net/http"
@@ -237,6 +238,11 @@ func (s *Server) Install(handle func(string, http.Handler), cacher Cacher, authV
 	handle("GET /search-help", s.staticPageHandler("search-help", "Search Help"))
 	handle("GET /license-policy", s.licensePolicyHandler())
 	handle("GET /about", s.staticPageHandler("about", "About"))
+	// installation de Lyuba : la page, et les scripts de la version de
+	// lyuba dont dépend ce site (curl .../install.sh | sh)
+	handle("GET /install", s.staticPageHandler("install", "Installer Lyuba"))
+	handle("GET /install.sh", serveScript(lyubainstall.Sh, "text/x-shellscript; charset=utf-8"))
+	handle("GET /install.ps1", serveScript(lyubainstall.PowerShell, "text/plain; charset=utf-8"))
 	handle("GET /badge/", http.HandlerFunc(s.badgeHandler))
 	handle("GET /C", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Package "C" is a special case: redirect to /cmd/cgo.
@@ -559,9 +565,9 @@ func (s *Server) newBasePage(r *http.Request, title string) pagepkg.BasePage {
 	var searchPrompt string
 	if s.localMode {
 		// Symbol search is not supported in local mode.
-		searchPrompt = "Search packages"
+		searchPrompt = "Chercher un package"
 	} else {
-		searchPrompt = "Search packages or symbols"
+		searchPrompt = "Chercher un package ou un symbole"
 	}
 
 	return pagepkg.BasePage{
@@ -783,4 +789,14 @@ func serveFileFS(w http.ResponseWriter, r *http.Request, fsys fs.FS, name string
 	fs := http.FileServer(http.FS(fsys))
 	r.URL.Path = name
 	fs.ServeHTTP(w, r)
+}
+
+// serveScript : un script d'installation, en texte (lisible avant de le
+// lancer), jamais mis en cache longtemps.
+func serveScript(body, contentType string) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", contentType)
+		w.Header().Set("Cache-Control", "public, max-age=300")
+		io.WriteString(w, body)
+	})
 }

@@ -22,19 +22,19 @@ type searchTip struct {
 
 var searchTips = []searchTip{
 	{
-		"Search for a package, for example",
-		"http",
-		"command",
+		"Chercher un package, par exemple",
+		"formes",
+		"verger",
 	},
 	{
-		"Search for a symbol, for example",
-		"Unmarshal",
-		"io.Reader",
+		"Chercher un symbole (type, méthode, constante), par exemple",
+		"Carre",
+		"Fruit.Decrire",
 	},
 	{
-		"Search for symbols within a package using the # filter. For example",
-		"golang.org/x #error",
-		"#reader io",
+		"Chercher dans un package avec le filtre #. Par exemple",
+		"formes #Aire",
+		"#Panier verger",
 	},
 }
 

@@ -11,13 +11,13 @@ package fetch
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"io/fs"
 	"path"
 	"strings"
 
 	"golang.org/x/pkgsite/internal"
+	"golang.org/x/pkgsite/internal/derrors"
 	"golang.org/x/pkgsite/internal/godoc"
 	"golang.org/x/pkgsite/internal/source"
 	"golang.org/x/pkgsite/internal/stdlib"
@@ -28,8 +28,10 @@ import (
 // les tests de pkgsite, écrits sur des modules go, restent valables.
 var LyubaOnly = false
 
-// ErrNotLyuba : le module ne contient aucun .lyu.
-var ErrNotLyuba = errors.New("aucun fichier .lyu : pas un module Lyuba (voir pkg.go.dev)")
+// ErrNotLyuba : le module ne contient aucun .lyu. C'est une exclusion
+// (statut 403, comme les modules exclus de pkgsite), pas une erreur : le
+// worker voit passer tous les modules go de l'index.
+var ErrNotLyuba = fmt.Errorf("aucun fichier .lyu : pas un module Lyuba (voir pkg.go.dev) : %w", derrors.Excluded)
 
 // isSourceFile : les fichiers qui font un package, go ou Lyuba.
 func isSourceFile(name string) bool {

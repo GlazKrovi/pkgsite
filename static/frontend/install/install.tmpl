@@ -1,0 +1,31 @@
+<!--
+  Copyright 2026 Fernandes Samuel. All rights reserved.
+  Use of this source code is governed by a BSD-style
+  license that can be found in the LICENSE file.
+-->
+
+{{define "main"}}
+  <main class="go-Container" id="main-content">
+    <div class="go-Content">
+      <h1>Installer Lyuba</h1>
+      <p>Lyuba compile en go : il faut <a href="https://go.dev/dl/">go</a> 1.27 ou plus (le script propose de l'installer s'il manque).</p>
+      <h2>Linux, macOS, Git Bash</h2>
+      <pre>curl -fsSL https://pkg.lyuba.dev/install.sh | sh</pre>
+      <h2>Windows (PowerShell)</h2>
+      <pre>irm https://pkg.lyuba.dev/install.ps1 | iex</pre>
+      <p>Le script est interactif : il demande avant chaque action (Entrée = réponse par défaut). Il installe la commande <code>lyuba</code>, propose d'ajouter le dossier des binaires go au <code>PATH</code>, puis gopls (survol, définition et complétion dans l'éditeur), goreleaser (binaires de <code>lyuba publish</code>) et l'extension VS Code.</p>
+      <ul>
+        <li><code>LYUBA_OUI=1</code> : toutes les réponses par défaut, sans question (CI)</li>
+        <li><code>LYUBA_VERSION=v1.2.3</code> : une version précise</li>
+        <li><code>LYUBA_PATH=0</code> : ne jamais modifier le <code>PATH</code></li>
+      </ul>
+      <p>Lire le script avant de le lancer : <a href="/install.sh">install.sh</a>, <a href="/install.ps1">install.ps1</a>.</p>
+      <h2>Sans script</h2>
+      <pre>go install github.com/GlazKrovi/lyuba/cmd/lyuba@latest</pre>
+      <h2>Premier programme</h2>
+      <pre>mkdir bonjour &amp;&amp; cd bonjour
+lyuba init
+lyuba run .</pre>
+    </div>
+  </main>
+{{end}}

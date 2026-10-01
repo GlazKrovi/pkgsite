@@ -16,6 +16,7 @@ import (
 	"time"
 
 	"golang.org/x/pkgsite/internal/database"
+	"golang.org/x/pkgsite/internal/derrors"
 	"golang.org/x/pkgsite/internal/log"
 	"golang.org/x/pkgsite/internal/queue"
 )
@@ -125,7 +126,10 @@ func (q *Queue) claimAndProcess(ctx context.Context, processFunc ProcessFunc) {
 
 	log.Infof(ctx, "pgqueue: processing %s@%s (task %d)", modulePath, version, id)
 	code, err := processFunc(ctx, modulePath, version)
-	if err != nil {
+	if errors.Is(err, derrors.Excluded) {
+		// module exclu (pour pkg.lyuba.dev : tout module sans .lyu) : normal
+		log.Infof(ctx, "pgqueue: %s@%s exclu : %v", modulePath, version, err)
+	} else if err != nil {
 		log.Errorf(ctx, "pgqueue: processing %s@%s: status=%d err=%v", modulePath, version, code, err)
 		// This still gets removed (delete below) so that we don't endlessly
 		// fail the same work item.
