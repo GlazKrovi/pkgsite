@@ -1,0 +1,24 @@
+name: lyuba-fork
+on:
+  push:
+  pull_request:
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: pkgsite
+      - uses: actions/checkout@v4
+        with:
+          repository: GlazKrovi/lyuba
+          path: lyuba
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: pkgsite/go.mod
+      - name: Lyuba-specific tests
+        working-directory: pkgsite
+        run: go build ./cmd/... && go test ./internal/fetch/ -run TestLyuba
+      - name: Serve a Lyuba module and check the pages
+        working-directory: pkgsite
+        run: bash lyuba-deploy/smoke.sh ../lyuba/testdata/bonjour
