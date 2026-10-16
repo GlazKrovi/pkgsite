@@ -1,78 +1,34 @@
-# golang.org/x/pkgsite
+# pkgsite (Lyuba fork)
 
-This repository hosts the source code of the [pkg.go.dev](https://pkg.go.dev) website,
-and [`pkgsite`](https://pkg.go.dev/golang.org/x/pkgsite/cmd/pkgsite), a documentation
-server program.
+The package site of the [Lyuba](https://github.com/GlazKrovi/lyuba) language, served at pkg.lyuba.dev. It is a fork of [pkgsite](https://go.googlesource.com/pkgsite), the source of pkg.go.dev, and only indexes modules that contain `.lyu` files: pure Go modules are excluded.
 
-[![Go Reference](https://pkg.go.dev/badge/golang.org/x/pkgsite.svg)](https://pkg.go.dev/golang.org/x/pkgsite)
+Lyuba is an independent project, not affiliated with, endorsed by or sponsored by Google LLC or the Go project. "Go" and the Go gopher/logo are trademarks of Google LLC (see [go.dev/brand](https://go.dev/brand)); the Go logo and gopher are not used here. The fork is named "pkgsite (Lyuba fork)" and the site "Lyuba".
 
-## pkg.go.dev: a site for discovering Go packages
+What the fork changes, how to run it, deploy it and rebase it on upstream: [FORK.md](FORK.md).
 
-Pkg.go.dev is a website for discovering and evaluating Go packages and modules.
+## Documentation server
 
-You can check it out at [https://pkg.go.dev](https://pkg.go.dev).
+`cmd/pkgsite` serves the docs of a local Lyuba module:
 
-## pkgsite: a documentation server
-
-`pkgsite` program extracts and generates documentation for Go projects.
-
-Example usage:
-
-```
-$ go install golang.org/x/pkgsite/cmd/pkgsite@latest
-$ cd myproject
-$ pkgsite -open .
+```sh
+go run ./cmd/pkgsite -open -list=false path/to/module
 ```
 
-For more information, see the [pkgsite documentation](https://pkg.go.dev/golang.org/x/pkgsite/cmd/pkgsite).
+## Full site
+
+Postgres, worker and frontend, through docker compose:
+
+```sh
+cd lyuba-deploy
+docker compose up -d     # http://localhost:8080
+```
 
 ## API
 
-`pkgsite` provides a REST API for retrieving package and module information.
-The API endpoints include:
-
-- `/v1/package/{path}`: Information about the package at `{path}`.
-- `/v1/module/{path}`: Information about the module at `{path}`.
-- `/v1/versions/{path}`: Versions of the module at `{path}`.
-- `/v1/packages/{path}`: Information about packages of the module at `{path}`.
-- `/v1/search`: Search results.
-- `/v1/symbols/{path}`: List of symbols for the package at `{path}`.
-- `/v1/imported-by/{path}`: Paths of packages importing the package at `{path}`.
-- `/v1/vulns/{path}`: Vulnerabilities of the module at `{path}`.
-
-For detailed documentation of parameters and response schemas, see the documentation page served at `/api`, or refer directly to the annotated source code in `internal/api/api.go`.
-
-## Issues
-
-If you want to report a bug or have a feature suggestion, please first check
-the [known issues](https://github.com/golang/go/labels/pkgsite) to see if your
-issue is already being discussed. If an issue does not already exist, feel free
-to [file an issue](https://golang.org/s/pkgsite-feedback).
-
-For answers to frequently asked questions, see [pkg.go.dev/about](https://pkg.go.dev/about).
-
-You can also chat with us on the
-[#pkgsite Slack channel](https://gophers.slack.com/archives/C0166L4QGJV) on the
-[Gophers Slack](https://invite.slack.golangbridge.org).
-
-## Contributing
-
-We would love your help!
-
-Our canonical Git repository is located at
-[go.googlesource.com/pkgsite](https://go.googlesource.com/pkgsite).
-There is a mirror of the repository at
-[github.com/golang/pkgsite](https://github.com/golang/pkgsite).
-
-To contribute, please read our [contributing guide](CONTRIBUTING.md).
+The REST API of upstream is kept: `/v1/package/{path}`, `/v1/module/{path}`, `/v1/versions/{path}`, `/v1/packages/{path}`, `/v1/search`, `/v1/symbols/{path}`, `/v1/imported-by/{path}`, `/v1/vulns/{path}`.
 
 ## License
 
-Unless otherwise noted, the Go source files are distributed under the BSD-style
-license found in the [LICENSE](LICENSE) file.
+BSD-3-Clause, the license of upstream pkgsite: see [LICENSE](LICENSE) ("The Go Authors" copyright kept, Lyuba modifications added) and [PATENTS](PATENTS). As the license states, the names of Google LLC and of the Go contributors may not be used to endorse or promote this fork without specific prior written permission.
 
-## Links
-
-- [Homepage](https://pkg.go.dev)
-- [Feedback](https://golang.org/s/pkgsite-feedback)
-- [Issue Tracker](https://golang.org/s/pkgsite-issues)
+[CONTRIBUTING.md](CONTRIBUTING.md) is upstream's and refers to the Go project's process (Gerrit, CLA): it does not apply to this fork.
